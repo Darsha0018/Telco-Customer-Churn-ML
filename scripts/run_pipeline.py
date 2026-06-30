@@ -10,7 +10,8 @@ import argparse
 import pandas as pd
 import mlflow
 import mlflow.sklearn
-from posthog import project_root
+
+from pathlib import Path
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     classification_report, precision_score, recall_score,
@@ -36,9 +37,17 @@ def main(args):
     
     # === MLflow Setup - ESSENTIAL for experiment tracking ===
     # Configure MLflow to use local file-based tracking (not a tracking server)
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    mlruns_path = args.mlflow_uri or f"file://{project_root}/mlruns"  # Local file-based tracking
-    mlflow.set_tracking_uri(mlruns_path)
+
+    project_root = Path(__file__).resolve().parent.parent
+    mlruns_dir = project_root / "mlruns"
+    mlruns_dir.mkdir(parents=True, exist_ok=True)
+
+    tracking_uri = f"file:///{mlruns_dir.resolve().as_posix()}"
+
+    print("MLflow Tracking URI:", tracking_uri)
+
+    mlflow.set_tracking_uri(tracking_uri)
+    
     mlflow.set_experiment(args.experiment)  # Creates experiment if doesn't exist
 
     # Start MLflow run - all subsequent logging will be tracked under this run

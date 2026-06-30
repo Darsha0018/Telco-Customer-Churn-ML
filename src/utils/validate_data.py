@@ -14,6 +14,13 @@ def validate_telco_data(df) -> Tuple[bool, List[str]]:
     print("🔍 Starting data validation with Great Expectations...")
     
     # Convert pandas DataFrame to Great Expectations Dataset
+    import pandas as pd
+
+    # Convert TotalCharges BEFORE creating the GE dataset
+    if "TotalCharges" in df.columns:
+        df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce")
+
+    # Now create the Great Expectations dataset
     ge_df = ge.dataset.PandasDataset(df)
     
     # === SCHEMA VALIDATION - ESSENTIAL COLUMNS ===

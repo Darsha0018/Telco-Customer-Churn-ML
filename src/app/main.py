@@ -186,16 +186,7 @@ demo = gr.Interface(
     💡 **Tip**: Month-to-month contracts with fiber optic internet and electronic check payments 
     tend to have higher churn rates.
     """,
-    examples=[
-        # High churn risk example
-        ["Female", "No", "No", "Yes", "No", "Fiber optic", "No", "No", "No", 
-         "No", "Yes", "Yes", "Month-to-month", "Yes", "Electronic check", 
-         1, 85.0, 85.0],
-        # Low churn risk example  
-        ["Male", "Yes", "Yes", "Yes", "Yes", "DSL", "Yes", "Yes", "Yes",
-         "Yes", "No", "No", "Two year", "No", "Credit card (automatic)",
-         60, 45.0, 2700.0]
-    ],
+ 
     theme=gr.themes.Soft()  # Professional appearance
 )
 
