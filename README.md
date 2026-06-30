@@ -1,63 +1,170 @@
-## Telco Churn – End-to-End ML Project
-### Purpose
+<div align="center">
 
-Build and ship a full machine-learning solution for predicting customer churn in a telecom setting—from data prep and modeling to an API + web UI deployed on AWS.
+# 🚀 Customer Churn Prediction System
 
-### Problem solved & benefits
+### End-to-End Machine Learning Pipeline for Telecom Customer Churn Prediction
 
-- Faster decisions: Predicts which customers are likely to churn so teams can act before they leave.
-- Operationalized ML: Model is accessible via a REST API and a simple UI; anyone can test it without notebooks.
-- Repeatable delivery: CI/CD + containers mean every change can be rebuilt, tested, and redeployed in a consistent way.
-- Traceable experiments: MLflow tracks runs, metrics, and artifacts for reproducibility and auditing.
+<p align="center">
 
-### What I built
+![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
+![XGBoost](https://img.shields.io/badge/XGBoost-ML-orange?style=for-the-badge)
+![FastAPI](https://img.shields.io/badge/FastAPI-API-009688?style=for-the-badge&logo=fastapi)
+![Gradio](https://img.shields.io/badge/Gradio-UI-FF6F00?style=for-the-badge)
+![MLflow](https://img.shields.io/badge/MLflow-Tracking-0194E2?style=for-the-badge)
+![Docker](https://img.shields.io/badge/Docker-Container-2496ED?style=for-the-badge&logo=docker)
+![AWS](https://img.shields.io/badge/AWS-ECS-orange?style=for-the-badge&logo=amazonaws)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-- Data & Modeling: Feature engineering + XGBoost classifier; experiments logged to MLflow.
-- Model tracking: Runs, metrics, and the serialized model logged under a named MLflow experiment.
-- Inference service: FastAPI app exposing /predict (POST) and a root health check /.
-- Web UI: Gradio interface mounted at /ui for quick, shareable manual testing.
-- Containerization: Docker image with uvicorn entrypoint (src.app.main:app) listening on port 8000.
-- CI/CD: GitHub Actions builds the image and pushes to Docker Hub; optionally triggers an ECS service update.
-- Orchestration: AWS ECS Fargate runs the container (serverless).
-- Networking: Application Load Balancer (ALB) on HTTP:80 forwarding to a Target Group (IP targets on HTTP:8000).
-- Security: Security groups scoped to allow ALB inbound 80 from the internet, and task inbound 8000 from the ALB SG.
-- Observability: CloudWatch Logs for container stdout/stderr and ECS service events.
+</p>
 
-### Deployment flow (high-level)
+---
 
-- Push to main → GitHub Actions builds the Docker image and pushes it to Docker Hub.
-- ECS service is updated (manually or via the workflow) to force a new deployment.
-- ALB health checks hit / on port 8000; once healthy, traffic is routed to the new task.
-- Users call POST /predict or open the Gradio UI at /ui via the ALB DNS.
+### 🎯 Predict Telecom Customer Churn using Machine Learning with an End-to-End Production Pipeline
 
-### Roadblocks & how we solved them
+**Built using XGBoost • MLflow • FastAPI • Gradio • Docker • AWS ECS**
 
-Unhealthy targets behind ALB
+</div>
 
-- Cause: App didn’t respond at the health-check path; listener/target port mismatches.
-- Fixes: Added GET / health endpoint; confirmed ALB listener on 80 forwards to TG on 8000; TG health check path set to /.
+---
 
-Module import error in container (ModuleNotFoundError: serving)
+# 📖 Overview
 
-- Cause: Python path in the image didn’t include src/.
-- Fixes: Set PYTHONPATH=/app/src in the Dockerfile; corrected uvicorn app path to src.app.main:app.
+Customer churn is one of the biggest challenges in the telecom industry. Retaining an existing customer is significantly more cost-effective than acquiring a new one.
 
-ALB DNS timing out
+This project provides a **production-ready Machine Learning system** that predicts whether a telecom customer is likely to churn based on customer demographics, account information, billing details, and subscribed services.
 
-- Cause: Security group rules not aligned with traffic flow.
-- Fixes: ALB SG allows inbound 80 from 0.0.0.0/0; task SG allows inbound 8000 from the ALB SG; outbound open.
+Unlike a traditional notebook-based machine learning project, this repository demonstrates a complete ML lifecycle—from raw data ingestion to model deployment—making it suitable for learning, portfolio presentation, and real-world implementation.
 
-ECS redeploy not picking up the new image
+---
 
-- Cause: Service still running previous task definition.
-- Fixes: Force new deployment (CLI or console) after pushing the new image; optional step added to CI.
+# 🎯 Problem Statement
 
-Gradio UI error (“No runs found in experiment”)
+Telecommunication companies lose significant revenue when customers discontinue their services.
 
-- Cause: Inference/UI expected an MLflow-logged model but couldn’t resolve a run.
-- Fixes: Standardized MLflow experiment name and model logging in training; inference loads the logged model consistently (and a local path for dev).
+The objective of this project is to:
 
-Local testing vs. prod paths
+- Predict customers likely to churn.
+- Help businesses take proactive retention actions.
+- Automate the entire ML workflow.
+- Deploy the trained model through REST APIs and an interactive web interface.
 
-- Cause: MLflow artifact URIs differ locally vs. in container.
-- Fixes: For local dev, load via direct ./mlruns/.../artifacts/model; in prod, container loads the packaged model path used at build time.
+---
+
+# ✨ Features
+
+## 📊 Data Pipeline
+
+- Data Loading
+- Data Validation using Great Expectations
+- Data Preprocessing
+- Missing Value Handling
+- Feature Engineering
+- One-Hot Encoding
+- Binary Encoding
+
+---
+
+## 🤖 Machine Learning
+
+- XGBoost Classifier
+- Class Imbalance Handling
+- Train/Test Split
+- Performance Evaluation
+- Hyperparameter Configuration
+- Model Serialization
+
+---
+
+## 📈 Experiment Tracking
+
+- MLflow Experiment Tracking
+- Model Versioning
+- Metrics Logging
+- Artifact Logging
+
+---
+
+## 🌐 Deployment
+
+- FastAPI REST API
+- Interactive Gradio Interface
+- Docker Containerization
+- AWS ECS Deployment
+- Application Load Balancer Support
+
+---
+
+# 🛠 Tech Stack
+
+| Category | Technologies |
+|-----------|--------------|
+| Programming | Python 3.11 |
+| Machine Learning | XGBoost, Scikit-learn |
+| Data Processing | Pandas, NumPy |
+| Validation | Great Expectations |
+| Experiment Tracking | MLflow |
+| API | FastAPI |
+| User Interface | Gradio |
+| Containerization | Docker |
+| Cloud | AWS ECS, ALB |
+| Version Control | Git & GitHub |
+
+---
+
+# 📊 Model Performance
+
+The model was trained on the **IBM Telco Customer Churn Dataset** using **XGBoost**.
+
+| Metric | Score |
+|--------|-------:|
+| Accuracy | **72.4%** |
+| Precision | **48.8%** |
+| Recall | **83.2%** |
+| F1 Score | **61.5%** |
+| ROC-AUC | **83.9%** |
+
+---
+
+# ⚡ Performance
+
+| Metric | Value |
+|---------|-------|
+| Training Time | **0.57 sec** |
+| Prediction Time | **0.012 sec** |
+| Samples / Second | **114,562** |
+
+---
+
+# 📌 Key Highlights
+
+✅ End-to-End Machine Learning Pipeline
+
+✅ Production Ready FastAPI Backend
+
+✅ Interactive Gradio Dashboard
+
+✅ MLflow Experiment Tracking
+
+✅ Dockerized Deployment
+
+✅ AWS ECS Compatible
+
+✅ Feature Engineering Pipeline
+
+✅ Data Validation using Great Expectations
+
+✅ REST API for Predictions
+
+✅ Modular Project Structure
+
+---
+
+# 📸 Preview
+
+> Screenshots will be added here.
+
+- Home Page
+- Prediction Interface
+- Prediction Result
+- MLflow Dashboard
+- AWS Deployment
